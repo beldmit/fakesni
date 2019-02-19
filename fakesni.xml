@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<rfc category="exp" docName="draft-belyavskiy-fakesni-00">
+<front>
+<title>Fake Server Name Indication</title>
+<author fullname="Dmitry Belyavskiy">
+<organization abbrev="TCI">Cryptocom LTD</organization>
+<address>
+<postal>
+<street>Kedrova st, 14/2</street>
+<city>Moscow</city>
+<code>127083</code>
+<country>RU</country>
+</postal>
+<email>beldmit@gmail.com</email>
+</address>
+</author>
+<date/>
+<area>sec</area>
+<abstract>
+<t>The document provides a specification of the Fake Server Name Indication.
+Being implemented, the Fake SNI specification provides a way to work around the
+monitoring solutions without providing any additional information to external
+observers.</t>
+</abstract>
+</front>
+<middle>
+<section title="Introduction">
+<t>Many DPI solutions use SNI information as a criteria to filter connection to
+various sites.  Though Encrypted SNI makes impossible to read the SNI value,
+there is <eref
+target="https://mailarchive.ietf.org/arch/msg/tls/WiT3oEh6PO96mm0z28BNMp0YgGs">information</eref>
+that absense of SNI looks suspicious itself and all communication is blocked.
+</t> 
+<t>This specification introduces a way to provide a value of SNI treated
+by TLS server as an alias to one of the names known by server but not matching
+the possibly suspicious host name.</t>
+</section>
+<section title="Fake SNI design goals">
+
+<t> The solution specified in this document is inspired by the design of Encrypted SNI</t>
+
+<t>The provider publishes a name matching the target name to be provided in
+clear text.  This document defines a publication mechanism using DNS, but other
+mechanisms are also possible.</t> 
+<t> When a client wants to establish a TLS connection to a domain served by an
+Fake SNI-supporting provider, it replaces the value in "server_name" extension
+in the ClientHello with the value obtained by transport.  The provider can then
+find out the desired name from its configuration and either establish the
+connection with the desired host or reject it.</t>
+</section>
+
+<section title="Fake SNI indication"></section>
+<section title="Client behaviour"></section>
+<section title="Server behaviour"></section>
+<section title="Security considerations"></section>
+</middle>
+</rfc>
