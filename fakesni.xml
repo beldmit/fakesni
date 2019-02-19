@@ -24,34 +24,75 @@ observers.</t>
 </abstract>
 </front>
 <middle>
+
 <section title="Introduction">
-<t>Many DPI solutions use SNI information as a criteria to filter connection to
+<t>Many DPI solutions use SNI information as a criterion to filter connection to
 various sites.  Though Encrypted SNI makes impossible to read the SNI value,
 there is <eref
 target="https://mailarchive.ietf.org/arch/msg/tls/WiT3oEh6PO96mm0z28BNMp0YgGs">information</eref>
-that absense of SNI looks suspicious itself and all communication is blocked.
+that absence of SNI looks suspicious itself and all communications are blocked.
 </t> 
+
 <t>This specification introduces a way to provide a value of SNI treated
 by TLS server as an alias to one of the names known by server but not matching
-the possibly suspicious host name.</t>
+the possibly suspicious hostname.</t>
 </section>
+
 <section title="Fake SNI design goals">
+<t>The solution specified in this document is inspired by the design of Encrypted SNI.</t>
 
-<t> The solution specified in this document is inspired by the design of Encrypted SNI</t>
+<t>The provider publishes a name matching the target name to be provided in the
+clear text. This document defines a publication mechanism using DNS, but other
+mechanisms are also possible.</t>
 
-<t>The provider publishes a name matching the target name to be provided in
-clear text.  This document defines a publication mechanism using DNS, but other
-mechanisms are also possible.</t> 
-<t> When a client wants to establish a TLS connection to a domain served by an
+<t> When a client wants to establish a TLS connection to a domain served by a
 Fake SNI-supporting provider, it replaces the value in "server_name" extension
 in the ClientHello with the value obtained by transport.  The provider can then
 find out the desired name from its configuration and either establish the
 connection with the desired host or reject it.</t>
 </section>
 
-<section title="Fake SNI indication"></section>
-<section title="Client behaviour"></section>
-<section title="Server behaviour"></section>
-<section title="Security considerations"></section>
+<section title="Fake SNI indication">
+<t> Fake SNI information is published in DNS via TXT RR. For example, the Fake
+SNI record for domain example.com may look like</t>
+
+<t>
+_fakesni.example.com. 60S IN TXT "myfakerecord.com IP"
+</t>
+
+<t>
+where IP address may be omitted. If present, it MUST match an IP address
+specified in A/AAAA record for the domain.
+</t>
+
+<t>
+Value specified in the Fake SNI RR MUST NOT match any hostname available for the IP address it is valid for.
+</t>
+
+</section>
+
+<section title="Server behaviour">
+<t>On receiveing the value of known Fake SNI in the TLS ClientHello server
+MUST return the certificate matching the original hostname. Otherwise server
+SHOULD abort the connection.
+</t>
+</section>
+
+<section title="Client behaviour">
+<t>
+Client MAY use the Fake SNI record as fallback if connecting using ESNI is
+blocked. In this case client initiates normal TLS connection specifying the
+value from Fake SNI record in the server_name extension. If the certificate
+received from server does not match the original hostname, the client
+MUST abort the connection. Otherwise the client MUST follow the normal process
+of TLS handshake.
+</t>
+</section>
+
+<section title="Security considerations">
+<t>
+TBD
+</t>
+</section>
 </middle>
 </rfc>
