@@ -78,9 +78,9 @@ where IP address may be omitted. If present, it MUST match an IP address
 specified in A/AAAA record for the domain.
 </t>
 
-<t>
-Value specified in the Fake SNI RR MUST NOT match any hostname available for the IP address it is valid for.
-</t>
+<t>Value specified in the Fake SNI RR MUST NOT match any hostname available for
+the IP address it is valid for.  Fake names for different hosts MUST be
+different.</t>
 
 </section>
 
