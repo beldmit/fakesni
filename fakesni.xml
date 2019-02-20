@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<rfc category="exp" docName="draft-belyavskiy-fakesni-00">
+<rfc category="exp" docName="draft-belyavskiy-fakesni-01">
 <front>
 <title>Fake Server Name Indication</title>
 <author fullname="Dmitry Belyavskiy">
@@ -36,6 +36,9 @@ that absence of SNI looks suspicious itself and all communications are blocked.
 <t>This specification introduces a way to provide a value of SNI treated
 by TLS server as an alias to one of the names known by server but not matching
 the possibly suspicious hostname.</t>
+
+<t>This specification does not save from DPI solutions but it provides one more
+loophole to cheat them.</t>
 </section>
 
 <section title="Fake SNI design goals">
@@ -50,6 +53,16 @@ Fake SNI-supporting provider, it replaces the value in "server_name" extension
 in the ClientHello with the value obtained by transport.  The provider can then
 find out the desired name from its configuration and either establish the
 connection with the desired host or reject it.</t>
+</section>
+
+<section title="Definitions">
+<t>
+<list>
+<t>Original name - the hostname of service that is subject to hide.</t>
+<t>Fake name - the hostname specified by server and sent by client to indicate
+intention to connect to host with original name.</t>
+</list>
+</t>
 </section>
 
 <section title="Fake SNI indication">
@@ -90,9 +103,17 @@ of TLS handshake.
 </section>
 
 <section title="Security considerations">
-<t>
-TBD
-</t>
+<t>As Fake SNI can be used in TLS 1.2, it does not provide any problems to DPI
+because in this case the original hostname is available in clear text in server
+certificate.  TLS 1.3 encrypts the Certificate message, so it is RECOMMENDED to
+use Fake SNI together with TLS 1.3.  To strengthen the protection, it's
+recommended to obtain _fakesni RR via DoT or DoH.</t>
+
+<t>As DPI solutions are able to obtain the DNS _fakesni records as legitimate
+clients do, it is RECOMMENDED to set reasonable TTL values for the _fakesni
+records. Also it is RECOMMENDED to use such values of fake names that are
+syntactically correct domain names. Otherwise DPI can recognise the fake names
+as fake ones.</t>
 </section>
 </middle>
 </rfc>
