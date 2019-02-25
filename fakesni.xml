@@ -78,9 +78,8 @@ where IP address may be omitted. If present, it MUST match an IP address
 specified in A/AAAA record for the domain.
 </t>
 
-<t>Value specified in the Fake SNI RR MUST NOT match any hostname available for
-the IP address it is valid for.  Fake names for different hosts MUST be
-different.</t>
+<t>Value specified in the Fake SNI RR MUST identify the original hostname it is
+valid for. Fake names for different hosts on the same IP address MUST be different.</t>
 
 </section>
 
@@ -100,6 +99,13 @@ received from server does not match the original hostname, the client
 MUST abort the connection. Otherwise the client MUST follow the normal process
 of TLS handshake.
 </t>
+</section>
+
+<section title="Operational considerations">
+<t>Depending on the DPI modus operandi it may make sense to provide a valid
+fake name (e.g. from deep-level subdomain) resolving to the same IPs as
+original hostname does. If DPI tries to resolve the fake name, such behaviour
+will make distinguishing between real and fake names difficult.</t>
 </section>
 
 <section title="Security considerations">
