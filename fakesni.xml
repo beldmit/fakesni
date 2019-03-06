@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<rfc category="exp" docName="draft-belyavskiy-fakesni-01">
+<rfc category="exp" docName="draft-belyavskiy-fakesni-02">
 <front>
 <title>Fake Server Name Indication</title>
 <author fullname="Dmitry Belyavskiy">
@@ -8,7 +8,7 @@
 <postal>
 <street>Kedrova st, 14/2</street>
 <city>Moscow</city>
-<code>127083</code>
+<code>117218</code>
 <country>RU</country>
 </postal>
 <email>beldmit@gmail.com</email>
@@ -18,7 +18,7 @@
 <area>sec</area>
 <abstract>
 <t>The document provides a specification of the Fake Server Name Indication.
-Being implemented, the Fake SNI specification provides a way to work around the
+Being implemented, the Fake SNI specification provides a way to cheat the
 monitoring solutions without providing any additional information to external
 observers.</t>
 </abstract>
@@ -42,7 +42,11 @@ loophole to cheat them.</t>
 </section>
 
 <section title="Fake SNI design goals">
-<t>The solution specified in this document is inspired by the design of Encrypted SNI.</t>
+<t>The solution specified in this document is inspired by the design of
+Encrypted SNI. It is fully-compatible with current TLS specifications.  As it
+does not make much sense to use it with TLS 1.0-1.2, where the original host
+name will be provided unencrypted in the certificate, in case of TLS 1.3 the
+certificate is delivered encrypted.</t>
 
 <t>The provider publishes a name matching the target name to be provided in the
 clear text. This document defines a publication mechanism using DNS, but other
@@ -66,20 +70,20 @@ intention to connect to host with original name.</t>
 </section>
 
 <section title="Fake SNI indication">
-<t> Fake SNI information is published in DNS via TXT RR. For example, the Fake
+<t>Fake SNI information is published in DNS via TXT RR. For example, the Fake
 SNI record for domain example.com may look like</t>
 
 <t>
 _fakesni.example.com. 60S IN TXT "myfakerecord.com IP"
 </t>
 
-<t>
-where IP address may be omitted. If present, it MUST match an IP address
-specified in A/AAAA record for the domain.
-</t>
+<t>where IP address may be omitted. If present, it MUST match an IP address
+specified in A/AAAA record for the domain. Specifying IP address for a specific
+fake name may help in case when a service is hosted using more than one CDN.</t>
 
-<t>Value specified in the Fake SNI RR MUST identify the original hostname it is
-valid for. Fake names for different hosts on the same IP address MUST be different.</t>
+<t>The fake name specified in the Fake SNI RR MUST identify the original
+hostname it is valid for. Fake names for different hosts on the same IP address
+MUST be different to distinguish the original names.</t>
 
 </section>
 
@@ -120,6 +124,10 @@ clients do, it is RECOMMENDED to set reasonable TTL values for the _fakesni
 records. Also it is RECOMMENDED to use such values of fake names that are
 syntactically correct domain names. Otherwise DPI can recognise the fake names
 as fake ones.</t>
+</section>
+<section title="Current version of the specification">
+<t>The current version of the specification is available at <eref
+target="https://github.com/beldmit/fakesni/">GitHub repository</eref>.</t>
 </section>
 </middle>
 </rfc>
