@@ -113,6 +113,14 @@ will make distinguishing between real and fake names difficult.</t>
 </section>
 
 <section title="Security considerations">
+<t>The document <eref
+target="https://datatracker.ietf.org/doc/draft-ietf-tls-sni-encryption/">Issues
+and Requirements for SNI Encryption in TLS</eref> provides a comprehensive set
+of requirements to make SNI non-public. This specification, however, has a more
+limited desired scope of making the SNI-based censorship more difficult.
+Proposed Lack of using cryptography makes all the cryptography-related threats
+irrelevant.</t>
+
 <t>As Fake SNI can be used in TLS 1.2, it does not provide any problems to DPI
 because in this case the original hostname is available in clear text in server
 certificate.  TLS 1.3 encrypts the Certificate message, so it is RECOMMENDED to
